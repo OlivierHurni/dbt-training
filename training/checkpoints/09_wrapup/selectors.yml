@@ -1,0 +1,17 @@
+selectors:
+  - name: marts
+    description: Only the business marts.
+    definition:
+      method: fqn
+      value: "alpsport.gold.mart_*"
+
+  - name: nightly
+    description: Everything that must be refreshed after a new bronze batch (snapshots, silver and gold).
+    definition:
+      union:
+        - method: tag
+          value: snapshot
+        - method: tag
+          value: silver
+        - method: tag
+          value: gold

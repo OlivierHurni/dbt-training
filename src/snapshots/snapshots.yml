@@ -1,0 +1,22 @@
+# SCD type 2 history of the two dimensions that change in the source system.
+# Bronze rows carry an `updated_at` timestamp, so the `timestamp` strategy is used.
+snapshots:
+  - name: snap_products
+    description: History of product changes (price changes), one row per version of a product.
+    relation: source('bronze', 'products')
+    config:
+      database: silver
+      schema: sports_shop
+      unique_key: product_id
+      strategy: timestamp
+      updated_at: updated_at
+
+  - name: snap_sales_persons
+    description: History of sales person changes (store transfers), one row per version of a sales person.
+    relation: source('bronze', 'sales_persons')
+    config:
+      database: silver
+      schema: sports_shop
+      unique_key: sales_person_id
+      strategy: timestamp
+      updated_at: updated_at

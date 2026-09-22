@@ -1,0 +1,32 @@
+country_code,country_name,continent,region,currency_code,is_eu
+CH,Switzerland,Europe,Western Europe,CHF,false
+LI,Liechtenstein,Europe,Western Europe,CHF,false
+DE,Germany,Europe,Western Europe,EUR,true
+FR,France,Europe,Western Europe,EUR,true
+AT,Austria,Europe,Western Europe,EUR,true
+IT,Italy,Europe,Southern Europe,EUR,true
+ES,Spain,Europe,Southern Europe,EUR,true
+PT,Portugal,Europe,Southern Europe,EUR,true
+NL,Netherlands,Europe,Western Europe,EUR,true
+BE,Belgium,Europe,Western Europe,EUR,true
+LU,Luxembourg,Europe,Western Europe,EUR,true
+IE,Ireland,Europe,Northern Europe,EUR,true
+DK,Denmark,Europe,Northern Europe,DKK,true
+SE,Sweden,Europe,Northern Europe,SEK,true
+FI,Finland,Europe,Northern Europe,EUR,true
+NO,Norway,Europe,Northern Europe,NOK,false
+GB,United Kingdom,Europe,Northern Europe,GBP,false
+PL,Poland,Europe,Eastern Europe,PLN,true
+CZ,Czechia,Europe,Eastern Europe,CZK,true
+US,United States,North America,Northern America,USD,false
+CA,Canada,North America,Northern America,CAD,false
+MX,Mexico,North America,Central America,MXN,false
+BR,Brazil,South America,South America,BRL,false
+AR,Argentina,South America,South America,ARS,false
+JP,Japan,Asia,Eastern Asia,JPY,false
+CN,China,Asia,Eastern Asia,CNY,false
+IN,India,Asia,Southern Asia,INR,false
+AE,United Arab Emirates,Asia,Western Asia,AED,false
+AU,Australia,Oceania,Australia and New Zealand,AUD,false
+NZ,New Zealand,Oceania,Australia and New Zealand,NZD,false
+ZA,South Africa,Africa,Southern Africa,ZAR,false

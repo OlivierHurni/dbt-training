@@ -1,0 +1,133 @@
+version: 2
+models:
+- name: dim_date
+  columns:
+  - name: date_day
+    data_tests:
+    - unique
+    - not_null
+  - name: season
+    data_tests:
+    - accepted_values:
+        arguments:
+          values:
+          - winter
+          - spring
+          - summer
+          - autumn
+- name: dim_product
+  columns:
+  - name: product_id
+    data_tests:
+    - unique
+    - not_null
+  - name: unit_margin
+- name: dim_store
+  columns:
+  - name: store_id
+    data_tests:
+    - unique
+    - not_null
+- name: dim_sales_person
+  columns:
+  - name: sales_person_id
+    data_tests:
+    - unique
+    - not_null
+- name: dim_customer
+  columns:
+  - name: customer_id
+    data_tests:
+    - unique
+    - not_null
+  - name: country_name
+    data_tests:
+    - not_null
+  - name: loyalty_tier
+- name: fct_sales
+  columns:
+  - name: order_line_id
+    data_tests:
+    - unique
+    - not_null
+  - name: order_id
+    data_tests:
+    - not_null
+  - name: order_day
+    data_tests:
+    - relationships:
+        arguments:
+          to: ref('dim_date')
+          field: date_day
+  - name: customer_id
+    data_tests:
+    - relationships:
+        arguments:
+          to: ref('dim_customer')
+          field: customer_id
+  - name: store_id
+    data_tests:
+    - not_null
+    - relationships:
+        arguments:
+          to: ref('dim_store')
+          field: store_id
+  - name: sales_person_id
+    data_tests:
+    - relationships:
+        arguments:
+          to: ref('dim_sales_person')
+          field: sales_person_id
+  - name: product_id
+    data_tests:
+    - not_null
+    - relationships:
+        arguments:
+          to: ref('dim_product')
+          field: product_id
+  - name: order_status
+    data_tests:
+    - accepted_values:
+        arguments:
+          values:
+          - completed
+          - cancelled
+          - returned
+  - name: gross_amount
+  - name: discount_amount
+  - name: net_amount
+    data_tests:
+    - dbt_utils.accepted_range:
+        arguments:
+          min_value: 0
+  - name: margin_amount
+  - name: order_updated_at
+- name: mart_revenue_by_category_month
+  data_tests:
+  - dbt_utils.unique_combination_of_columns:
+      arguments:
+        combination_of_columns:
+        - month
+        - category
+  columns:
+  - name: net_revenue
+- name: mart_store_performance
+  data_tests:
+  - dbt_utils.unique_combination_of_columns:
+      arguments:
+        combination_of_columns:
+        - month
+        - store_id
+- name: mart_sales_person_ranking
+  columns:
+  - name: sales_person_id
+    data_tests:
+    - unique
+    - not_null
+  - name: cumulative_revenue_share
+- name: mart_revenue_by_country
+  columns:
+  - name: country_code
+    data_tests:
+    - unique
+    - not_null

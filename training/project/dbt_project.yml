@@ -1,0 +1,40 @@
+name: 'alpsport'
+version: '1.0.0'
+config-version: 2
+
+# Same profile as in SETUP.md
+profile: 'dbt-training'
+
+model-paths: ["models"]
+seed-paths: ["seeds"]
+snapshot-paths: ["snapshots"]
+macro-paths: ["macros"]
+test-paths: ["tests"]
+
+clean-targets:
+  - "target"
+  - "dbt_packages"
+
+# Medallion architecture: bronze is the shared source (loaded by your trainer, read-only for you),
+# you build silver and gold. Every model goes to the catalog of its layer and to YOUR personal schema:
+# the `schema` of your dbt profile (see SETUP.md), e.g. silver.olivier_hurni.stg_products.
+models:
+  alpsport:
+    silver:
+      +catalog: silver
+      +materialized: table
+      +tags: ['silver']
+    gold:
+      +catalog: gold
+      +materialized: table
+      +tags: ['gold']
+
+seeds:
+  alpsport:
+    +catalog: silver
+    +tags: ['seed']
+
+# Rows of failing tests (dbt test --store-failures) are written to silver, never to bronze
+data_tests:
+  alpsport:
+    +database: silver

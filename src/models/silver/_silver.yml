@@ -1,0 +1,152 @@
+version: 2
+
+models:
+  - name: stg_products
+    description: Cleaned product catalog, one row per product.
+    columns:
+      - name: product_id
+        description: Primary key of the product.
+        data_tests: [unique, not_null]
+      - name: category
+        description: Product category (e.g. Ski & Snowboard, Running).
+        data_tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: ['Ski & Snowboard', 'Running', 'Cycling', 'Hiking & Outdoor', 'Swimming', 'Fitness', 'Team Sports', 'Apparel']
+      - name: list_price
+        description: Current list price in CHF.
+        data_tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                inclusive: false
+      - name: unit_cost
+        description: Purchase cost of one unit in CHF.
+
+  - name: stg_stores
+    description: Cleaned stores, one row per store (the online shop is a store with `is_online = true`).
+    columns:
+      - name: store_id
+        description: Primary key of the store.
+        data_tests: [unique, not_null]
+      - name: store_type
+        description: Kind of store.
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ['city', 'mountain', 'outlet', 'online']
+
+  - name: stg_sales_persons
+    description: Cleaned sales persons with the store they currently work in.
+    columns:
+      - name: sales_person_id
+        description: Primary key of the sales person.
+        data_tests: [unique, not_null]
+      - name: store_id
+        description: Store where the sales person works now.
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('stg_stores')
+                field: store_id
+
+  - name: stg_customers
+    description: Cleaned customers, one row per customer.
+    columns:
+      - name: customer_id
+        description: Primary key of the customer.
+        data_tests: [unique, not_null]
+      - name: country_code
+        description: ISO country code, joins to the `countries` seed.
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('countries')
+                field: country_code
+      - name: loyalty_tier
+        description: '{{ doc("loyalty_tier") }}'
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ['basic', 'silver', 'gold', 'platinum']
+
+  - name: stg_sales_orders
+    description: >
+      Cleaned order headers, one row per order. Duplicates removed, status normalized,
+      orphan customer references flagged in `is_orphan_customer` and set to null.
+    columns:
+      - name: order_id
+        description: Primary key of the order.
+        data_tests: [unique, not_null]
+      - name: customer_id
+        description: Customer who placed the order. Null for anonymous in-store customers and for orphan references.
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('stg_customers')
+                field: customer_id
+      - name: is_orphan_customer
+        description: True if the source order pointed to a customer that does not exist.
+      - name: store_id
+        description: Store (or online shop) where the order was placed.
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_stores')
+                field: store_id
+      - name: sales_person_id
+        description: Sales person who served the customer. Null for online orders.
+      - name: channel
+        description: '`online` or `in_store`.'
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ['online', 'in_store']
+      - name: status
+        description: '{{ doc("order_status") }}'
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ['completed', 'cancelled', 'returned']
+      - name: updated_at
+        description: Last change of the order in the source system, used for the incremental load of `fct_sales`.
+
+  - name: stg_sales_order_lines
+    description: >
+      Cleaned order lines, one row per product on an order. Duplicates, negative quantities
+      and lines of unknown products are removed.
+    columns:
+      - name: order_line_id
+        description: Primary key of the order line.
+        data_tests: [unique, not_null]
+      - name: order_id
+        description: Order the line belongs to.
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('stg_sales_orders')
+                field: order_id
+      - name: product_id
+        description: Product sold.
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('stg_products')
+                field: product_id
+      - name: quantity
+        description: Number of units sold.
+        data_tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 1
+      - name: unit_price
+        description: Price of one unit in CHF when it was sold (before discount).
+      - name: discount_pct
+        description: Discount granted in percent (0-30).
+        data_tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                max_value: 30

@@ -1,0 +1,19 @@
+version: 2
+seeds:
+- name: countries
+  config:
+    column_types:
+      country_code: string
+      is_eu: boolean
+  columns:
+  - name: country_code
+    data_tests:
+    - unique
+    - not_null
+  - name: country_name
+    data_tests:
+    - not_null
+  - name: continent
+  - name: region
+  - name: currency_code
+  - name: is_eu

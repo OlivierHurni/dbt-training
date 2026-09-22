@@ -1,0 +1,29 @@
+version: 2
+
+seeds:
+  - name: countries
+    description: >
+      High-level reference data about countries (ISO 3166-1 alpha-2 code, continent, region, currency, EU membership).
+      Loaded with `dbt seed` from countries.csv; used to enrich the customer dimension.
+    config:
+      column_types:
+        country_code: string
+        is_eu: boolean
+    columns:
+      - name: country_code
+        description: ISO 3166-1 alpha-2 country code.
+        data_tests:
+          - unique
+          - not_null
+      - name: country_name
+        description: English short name of the country.
+        data_tests:
+          - not_null
+      - name: continent
+        description: Continent the country belongs to.
+      - name: region
+        description: UN geoscheme sub-region.
+      - name: currency_code
+        description: ISO 4217 code of the main currency.
+      - name: is_eu
+        description: True if the country is a member of the European Union.

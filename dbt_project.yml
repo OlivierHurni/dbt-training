@@ -1,0 +1,46 @@
+name: 'dbt_training'
+version: '1.0.0'
+config-version: 2
+
+# This setting configures which "profile" dbt uses for this project.
+profile: 'dbt-training'
+
+# These configurations specify where dbt should look for different types of files.
+# For Declarative Automation Bundles, we put everything in src, as you may have
+# non-dbt resources in your project.
+model-paths: ["src/models"]
+analysis-paths: ["src/analyses"]
+test-paths: ["src/tests"]
+seed-paths: ["src/seeds"]
+macro-paths: ["src/macros"]
+snapshot-paths: ["src/snapshots"]
+
+clean-targets: # directories to be removed by `dbt clean`
+  - "target"
+  - "dbt_packages"
+
+# Medallion architecture: bronze is the source (written by the generator notebook),
+# dbt builds silver and gold. Each layer lives in its own Unity Catalog catalog,
+# see src/macros/generate_schema_name.sql for how the schema is resolved.
+models:
+  dbt_training:
+    silver:
+      +catalog: silver
+      +schema: sports_shop
+      +materialized: table
+      +tags: ['silver']
+    gold:
+      +catalog: gold
+      +schema: sports_shop
+      +materialized: table
+      +tags: ['gold']
+
+seeds:
+  dbt_training:
+    +catalog: silver
+    +schema: sports_shop
+    +tags: ['seed']
+
+snapshots:
+  dbt_training:
+    +tags: ['snapshot']

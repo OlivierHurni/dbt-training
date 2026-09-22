@@ -1,0 +1,35 @@
+version: 2
+sources:
+- name: bronze
+  description: Raw tables of the AlpSport source system, one row per record as delivered.
+  database: bronze
+  schema: sports_shop
+  tables:
+  - name: products
+    description: Product catalog (current state, updated in place by the source system).
+    columns:
+    - name: product_id
+  - name: stores
+    description: The 11 physical stores and the online shop.
+    columns:
+    - name: store_id
+  - name: sales_persons
+    description: Sales persons and the store they currently work in.
+    columns:
+    - name: sales_person_id
+  - name: customers
+    description: Customers with their loyalty tier.
+    columns:
+    - name: customer_id
+  - name: sales_orders
+    description: Order headers. Contains duplicates, inconsistent status casing and orphan customer ids.
+    columns:
+    - name: order_id
+    - name: status
+    - name: customer_id
+  - name: sales_order_lines
+    description: Order lines. Contains duplicates, negative quantities and orphan product ids.
+    columns:
+    - name: order_line_id
+    - name: quantity
+    - name: product_id

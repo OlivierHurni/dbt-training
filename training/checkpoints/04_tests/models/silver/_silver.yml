@@ -1,0 +1,144 @@
+version: 2
+models:
+- name: stg_products
+  columns:
+  - name: product_id
+    data_tests:
+    - unique
+    - not_null
+  - name: category
+    data_tests:
+    - not_null
+    - accepted_values:
+        arguments:
+          values:
+          - Ski & Snowboard
+          - Running
+          - Cycling
+          - Hiking & Outdoor
+          - Swimming
+          - Fitness
+          - Team Sports
+          - Apparel
+  - name: list_price
+    data_tests:
+    - dbt_utils.accepted_range:
+        arguments:
+          min_value: 0
+          inclusive: false
+  - name: unit_cost
+- name: stg_stores
+  columns:
+  - name: store_id
+    data_tests:
+    - unique
+    - not_null
+  - name: store_type
+    data_tests:
+    - accepted_values:
+        arguments:
+          values:
+          - city
+          - mountain
+          - outlet
+          - online
+- name: stg_sales_persons
+  columns:
+  - name: sales_person_id
+    data_tests:
+    - unique
+    - not_null
+  - name: store_id
+    data_tests:
+    - relationships:
+        arguments:
+          to: ref('stg_stores')
+          field: store_id
+- name: stg_customers
+  columns:
+  - name: customer_id
+    data_tests:
+    - unique
+    - not_null
+  - name: country_code
+    data_tests:
+    - relationships:
+        arguments:
+          to: ref('countries')
+          field: country_code
+  - name: loyalty_tier
+    data_tests:
+    - accepted_values:
+        arguments:
+          values:
+          - basic
+          - silver
+          - gold
+          - platinum
+- name: stg_sales_orders
+  columns:
+  - name: order_id
+    data_tests:
+    - unique
+    - not_null
+  - name: customer_id
+    data_tests:
+    - relationships:
+        arguments:
+          to: ref('stg_customers')
+          field: customer_id
+  - name: is_orphan_customer
+  - name: store_id
+    data_tests:
+    - not_null
+    - relationships:
+        arguments:
+          to: ref('stg_stores')
+          field: store_id
+  - name: sales_person_id
+  - name: channel
+    data_tests:
+    - accepted_values:
+        arguments:
+          values:
+          - online
+          - in_store
+  - name: status
+    data_tests:
+    - accepted_values:
+        arguments:
+          values:
+          - completed
+          - cancelled
+          - returned
+  - name: updated_at
+- name: stg_sales_order_lines
+  columns:
+  - name: order_line_id
+    data_tests:
+    - unique
+    - not_null
+  - name: order_id
+    data_tests:
+    - relationships:
+        arguments:
+          to: ref('stg_sales_orders')
+          field: order_id
+  - name: product_id
+    data_tests:
+    - relationships:
+        arguments:
+          to: ref('stg_products')
+          field: product_id
+  - name: quantity
+    data_tests:
+    - dbt_utils.accepted_range:
+        arguments:
+          min_value: 1
+  - name: unit_price
+  - name: discount_pct
+    data_tests:
+    - dbt_utils.accepted_range:
+        arguments:
+          min_value: 0
+          max_value: 30
