@@ -21,8 +21,7 @@ clean-targets: # directories to be removed by `dbt clean`
 
 # Medallion architecture: bronze is the source (written by the generator notebook),
 # dbt builds silver and gold. Each layer lives in its own Unity Catalog catalog,
-# and in YOUR personal schema (the `schema` of your dbt profile, see SETUP.md) -
-# same schema-resolution concept as the student-start branch, no custom macro.
+# and in YOUR personal schema (the `schema` of your dbt profile, see SETUP.md).
 models:
   alpsport:
     silver:
