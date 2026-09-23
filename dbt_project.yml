@@ -23,7 +23,7 @@ clean-targets: # directories to be removed by `dbt clean`
 # dbt builds silver and gold. Each layer lives in its own Unity Catalog catalog,
 # see src/macros/generate_schema_name.sql for how the schema is resolved.
 models:
-  dbt_training:
+  alpsport:
     silver:
       +catalog: silver
       +schema: sports_shop
@@ -36,11 +36,11 @@ models:
       +tags: ['gold']
 
 seeds:
-  dbt_training:
+  alpsport:
     +catalog: silver
     +schema: sports_shop
     +tags: ['seed']
 
 snapshots:
-  dbt_training:
+  alpsport:
     +tags: ['snapshot']
