@@ -73,12 +73,13 @@ turns ~2% of the previous batch's orders into `returned`. Each `append` takes ab
 ## During the course
 
 * Students who are stuck can run `restore_checkpoint(N)` (last cell of each notebook) to get the finished files up to module N.
-* The complete reference solution is the project in `src/` on the `main` branch. To rebuild it (fixed schema `sports_shop`): from the
-  repository root, with a profile pointing at your workspace, run `dbt deps`, `dbt seed`, `dbt snapshot`, `dbt build`.
-* Students do their own work on the `student-start` branch, where the schema falls back to their profile's personal schema instead
-  of `sports_shop`. It is a separate branch from `main`, kept in sync by hand — when the reference project in `src/` changes on
-  `main`, re-apply the same trim-down (empty `src/` to a skeleton, drop the `+schema: sports_shop` overrides and the custom
-  `generate_schema_name` macro in `dbt_project.yml`) on `student-start`.
+* The complete reference solution is the project in `src/` on the `main` branch. Schema resolution is the same concept everywhere
+  (models land in the `schema` of whichever profile runs them, no custom macro): to rebuild the reference with a fixed `sports_shop`
+  schema, use a profile whose `schema` is `sports_shop`, then from the repository root run `dbt deps`, `dbt seed`, `dbt snapshot`,
+  `dbt build`.
+* Students do their own work on the `student-start` branch, with their own personal schema in their profile. It is a separate
+  branch from `main`, kept in sync by hand — when the reference project in `src/` changes on `main`, re-apply the same trim-down
+  (empty `src/` to a skeleton) on `student-start`.
 * Typical problems are listed at the end of [SETUP.md](SETUP.md) step 5 (token, virtual environment, permissions).
 
 ## After the course

@@ -169,9 +169,9 @@ Optional: keep the token out of the file by writing `token: "{{ env_var('DBT_TOK
 |---|---|
 | `export DBT_TOKEN=dapi...` | `$env:DBT_TOKEN = "dapi..."` |
 
-> **About the schema.** On the `student-start` branch every model, seed and snapshot you build is written to the catalog of its layer
-> (`silver` or `gold`) and to the `schema` of this profile. On `main` (the trainer's reference project) the schema is fixed to
-> `sports_shop` regardless of your profile, so don't run `main` with your own profile — stay on `student-start`.
+> **About the schema.** Every model, seed and snapshot you build is written to the catalog of its layer (`silver` or `gold`) and to
+> the `schema` of this profile — the same rule on every branch. `main` holds the trainer's reference project, built with a profile
+> whose `schema` is `sports_shop`; don't rebuild it with your own personal schema — stay on `student-start` for the exercises.
 
 ## 5. Check the connection
 
