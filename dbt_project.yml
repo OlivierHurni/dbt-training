@@ -42,3 +42,9 @@ seeds:
 snapshots:
   alpsport:
     +tags: ['snapshot']
+
+# Rows of failing tests (dbt test --store-failures) are written to silver, never to bronze
+# (you only have read access to bronze).
+data_tests:
+  alpsport:
+    +database: silver
