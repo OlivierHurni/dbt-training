@@ -34,7 +34,12 @@ Check the versions (open a **new** terminal after installing):
 ```bash
 git clone https://github.com/OlivierHurni/dbt-training.git
 cd dbt-training
+git checkout student-start
 ```
+
+`student-start` is the branch you work on: it starts empty and you fill it in notebook by notebook. `main` holds the
+trainer's finished reference project (see step 5) — don't build your own work there, your personal schema is only
+honored on `student-start`.
 
 ## 2. Create a virtual environment and install dbt
 
@@ -164,14 +169,15 @@ Optional: keep the token out of the file by writing `token: "{{ env_var('DBT_TOK
 |---|---|
 | `export DBT_TOKEN=dapi...` | `$env:DBT_TOKEN = "dapi..."` |
 
-> **About the schema.** In the training project (`training/project`) every model, seed and snapshot is built in the catalog of its layer
-> (`silver` or `gold`) and in the `schema` of this profile. In the reference project (`src/`, used by the trainer) the schema is fixed
-> (`sports_shop`), so do not run the reference project with your profile.
+> **About the schema.** On the `student-start` branch every model, seed and snapshot you build is written to the catalog of its layer
+> (`silver` or `gold`) and to the `schema` of this profile. On `main` (the trainer's reference project) the schema is fixed to
+> `sports_shop` regardless of your profile, so don't run `main` with your own profile — stay on `student-start`.
 
 ## 5. Check the connection
 
+Run this from the repository root (no `cd` needed, `dbt_project.yml` lives there):
+
 ```bash
-cd training/project
 dbt deps
 dbt debug
 ```
@@ -200,11 +206,11 @@ starting with `training/notebooks/01_setup.ipynb`.
 3. Top right, click **Select Kernel** > **Python Environments** > **`.venv`**. (No `.venv` in the list? Command palette > *Python: Select Interpreter* > the one in `.venv`, then reload the window.)
 4. Run the cells one by one (`Shift+Enter`).
 
-You build your own dbt project in `training/project/`. The finished reference project is in `src/`.
+You build your own dbt project in `src/`, on the `student-start` branch. The finished reference project is `src/` on `main`.
 
 ## Useful dbt commands
 
-Run them from `training/project` with the environment activated.
+Run them from the repository root with the environment activated.
 
 ```bash
 dbt run --select stg_sales_orders          # one model

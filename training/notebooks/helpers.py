@@ -17,7 +17,8 @@ import yaml
 
 HERE = Path(__file__).resolve().parent
 TRAINING = HERE.parent
-PROJECT = TRAINING / "project"
+ROOT = TRAINING.parent  # repo root: where dbt_project.yml lives, and where dbt commands run
+SRC = ROOT / "src"  # the files a student is actually building
 CHECKPOINTS = TRAINING / "checkpoints"
 PROFILE_NAME = "dbt-training"
 
@@ -110,12 +111,12 @@ def dbt(args, project=True):
     It first prints the same command as you would type it in a terminal.
     """
     cmd = [_dbt_executable(), "--no-use-colors"] + shlex.split(args)
-    where = "from the folder training/project" if project else "from any folder"
+    where = "from the repository root" if project else "from any folder"
     print(f"Terminal equivalent ({where}, virtual environment activated):\n    dbt {args}\n")
     env = os.environ.copy()
     env["PYTHONUTF8"] = "1"
     env["PYTHONIOENCODING"] = "utf-8"
-    proc = subprocess.Popen(cmd, cwd=PROJECT if project else None, stdout=subprocess.PIPE,
+    proc = subprocess.Popen(cmd, cwd=ROOT if project else None, stdout=subprocess.PIPE,
                             stderr=subprocess.STDOUT, text=True, encoding="utf-8", errors="replace", env=env)
     for line in proc.stdout:
         # drop the timestamp prefix to keep the output readable
@@ -131,28 +132,28 @@ def check(label, condition, hint=""):
 
 
 def show_file(path):
-    """Print a file of the project (path relative to training/project)."""
+    """Print a file of the project (path relative to the repository root)."""
     print(f"--- {path}")
-    print((PROJECT / path).read_text(encoding="utf-8"))
+    print((ROOT / path).read_text(encoding="utf-8"))
 
 
 def project_tree():
     """List the files of the project you are building."""
-    for p in sorted(PROJECT.rglob("*")):
-        rel = p.relative_to(PROJECT)
+    for p in sorted(SRC.rglob("*")):
+        rel = p.relative_to(SRC)
         if p.is_file() and not any(part in ("target", "dbt_packages", "logs") for part in rel.parts) \
                 and p.name != ".gitkeep":
             print(rel.as_posix())
 
 
 def restore_checkpoint(n):
-    """Copy the checkpoints 02..n over the project (catch up if you are stuck; overwrites your files)."""
+    """Copy the checkpoints 02..n over src/ (catch up if you are stuck; overwrites your files)."""
     n = int(n)
     for cp in sorted(CHECKPOINTS.iterdir()):
         if cp.is_dir() and 2 <= int(cp.name[:2]) <= n:
             for f in cp.rglob("*"):
                 if f.is_file():
-                    dest = PROJECT / f.relative_to(cp)
+                    dest = SRC / f.relative_to(cp)
                     dest.parent.mkdir(parents=True, exist_ok=True)
                     shutil.copy(f, dest)
     print(f"Project restored to the end of module {n:02d}.")

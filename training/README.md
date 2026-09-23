@@ -1,7 +1,7 @@
 # Training notebooks
 
 Follow the notebooks in [notebooks/](notebooks/) in order (open them in VS Code with the `.venv` kernel, on Windows or macOS).
-Each one explains a dbt concept, then you build a piece of the project in [project/](project/).
+Each one explains a dbt concept, then you build a piece of the project in [../src/](../src/), on the `student-start` branch.
 Setup instructions: [../SETUP.md](../SETUP.md).
 
 **Shared data, personal results.** The bronze data is loaded once by the trainer and shared by the whole class (read-only).
@@ -21,8 +21,8 @@ Everything you build goes into *your* schema, `silver.<schema>` and `gold.<schem
 | 09 | Wrap-up | selectors, tags, Databricks job (needs a new batch from the trainer) |
 
 **dbt commands.** Every `dbt("...")` cell prints the equivalent terminal command first. You can run any of them in a terminal instead:
-`cd training/project`, activate the virtual environment, then type the command shown.
+from the repository root, activate the virtual environment, then type the command shown.
 
 **Stuck?** Every module has a checkpoint in [checkpoints/](checkpoints/) with the finished files.
-The last cell of each notebook restores it: `restore_checkpoint(4)` gives you the project as it is at the end of notebook 04.
-The complete reference project is in [../src/](../src/). Trainers: see [../TRAINER.md](../TRAINER.md).
+The last cell of each notebook restores it: `restore_checkpoint(4)` copies the checkpoints up to notebook 04 over `../src/`.
+The complete reference project is `../src/` on the `main` branch. Trainers: see [../TRAINER.md](../TRAINER.md).
