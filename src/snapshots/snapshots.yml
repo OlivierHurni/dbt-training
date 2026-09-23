@@ -7,7 +7,7 @@ snapshots:
     relation: source('bronze', 'products')
     config:
       database: silver
-      schema: sports_shop
       unique_key: product_id
+      tags: ['snapshot']
       strategy: timestamp
       updated_at: updated_at

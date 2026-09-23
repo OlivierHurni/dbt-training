@@ -3,8 +3,8 @@
 {{
     config(
         database='silver',
-        schema='sports_shop',
         unique_key='sales_person_id',
+        tags=['snapshot'],
         strategy='timestamp',
         updated_at='updated_at',
     )
