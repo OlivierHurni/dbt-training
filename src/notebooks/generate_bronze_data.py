@@ -29,11 +29,11 @@
 
 dbutils.widgets.text("catalog", "bronze", "Catalog")
 dbutils.widgets.text("schema", "sports_shop", "Schema")
-dbutils.widgets.dropdown("mode", "append", ["init", "append"], "Mode (init wipes everything)")
-dbutils.widgets.text("n_orders_init", "60000", "Orders in init batch (2 years)")
+dbutils.widgets.dropdown("mode", "init", ["init", "append"], "Mode (init wipes everything)")
+dbutils.widgets.text("n_orders_init", "600000", "Orders in init batch (2 years)")
 dbutils.widgets.text("n_orders_batch", "600", "Orders per appended batch")
 dbutils.widgets.text("days_per_batch", "7", "Days covered per appended batch")
-dbutils.widgets.text("dirty_rate", "0.01", "Share of dirty rows (0 = clean)")
+dbutils.widgets.text("dirty_rate", "0.001", "Share of dirty rows (0 = clean)")
 dbutils.widgets.text("seed", "42", "Random seed")
 
 # COMMAND ----------
