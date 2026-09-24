@@ -1,7 +1,8 @@
 ## requirements-dev.txt: dependencies for local development.
 
 dbt-databricks>=1.12.0,<2.0.0
-
+databricks-connect>=16.1.7
+databricks-sdk[notebook]
 # training notebooks (training/notebooks)
 ipykernel
 pandas

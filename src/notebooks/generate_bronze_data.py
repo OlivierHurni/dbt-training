@@ -21,7 +21,7 @@
 # MAGIC
 # MAGIC **Story in the data:** ski peaks in winter, swimming peaks in summer (with a heatwave in July 2025),
 # MAGIC Saturdays and Black Friday spike, a few sales persons and best-sellers dominate (80/20).
-# MAGIC
+# MAGIC 
 # MAGIC **Deliberately dirty rows** (`dirty_rate`, default 1%): duplicate orders/lines, upper-cased statuses,
 # MAGIC orphan customer/product ids, negative quantities. They are what the dbt tests should catch.
 
@@ -31,7 +31,7 @@ dbutils.widgets.text("catalog", "bronze", "Catalog")
 dbutils.widgets.text("schema", "sports_shop", "Schema")
 dbutils.widgets.dropdown("mode", "init", ["init", "append"], "Mode (init wipes everything)")
 dbutils.widgets.text("n_orders_init", "600000", "Orders in init batch (2 years)")
-dbutils.widgets.text("n_orders_batch", "600", "Orders per appended batch")
+dbutils.widgets.text("n_orders_batch", "6000", "Orders per appended batch")
 dbutils.widgets.text("days_per_batch", "7", "Days covered per appended batch")
 dbutils.widgets.text("dirty_rate", "0.001", "Share of dirty rows (0 = clean)")
 dbutils.widgets.text("seed", "42", "Random seed")
@@ -482,7 +482,7 @@ spark.sql(f"""
     UNION ALL SELECT 'customers', COUNT(*), NULL FROM {tbl('customers')}
     UNION ALL SELECT 'sales_orders', COUNT(*), MAX(_batch_id) FROM {tbl('sales_orders')}
     UNION ALL SELECT 'sales_order_lines', COUNT(*), MAX(_batch_id) FROM {tbl('sales_order_lines')}
-""").display()
+""").show(truncate=False)
 
 # COMMAND ----------
 
@@ -495,7 +495,7 @@ spark.sql(f"""
     JOIN {tbl('products')} p USING (product_id)
     WHERE l.quantity > 0
     GROUP BY 1, 2 ORDER BY 1, 2
-""").display()
+""").show(truncate=False)
 
 # COMMAND ----------
 
@@ -509,4 +509,4 @@ checks = {
     "non_positive_quantity": lines_t.where("quantity <= 0").count(),
     "orphan_products": lines_t.join(spark.table(tbl("products")).select("product_id"), "product_id", "left_anti").count(),
 }
-spark.createDataFrame(list(checks.items()), "check string, n_rows long").display()
+spark.createDataFrame(list(checks.items()), "check string, n_rows long").show(truncate=False)
